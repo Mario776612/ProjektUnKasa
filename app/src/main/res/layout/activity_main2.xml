@@ -63,28 +63,6 @@
             app:layout_constraintTop_toBottomOf="@id/buttonPara5" />
 
         <Button
-            android:id="@+id/buttonPara9"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="8dp"
-            android:text="Para 9"
-            app:layout_constraintEnd_toStartOf="@id/buttonPara10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara7" />
-
-        <Button
-            android:id="@+id/buttonPara11"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:layout_marginEnd="8dp"
-            android:text="Para 11"
-            app:layout_constraintEnd_toStartOf="@id/buttonPara12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara9" />
-
-        <Button
             android:id="@+id/buttonPara4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -116,28 +94,6 @@
             app:layout_constraintEnd_toStartOf="@id/buttonPara6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttonPara3" />
-
-        <Button
-            android:id="@+id/buttonPara12"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="48dp"
-            android:text="Para 12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/buttonPara11"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara10" />
-
-        <Button
-            android:id="@+id/buttonPara10"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="36dp"
-            android:text="Para 10"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/buttonPara9"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara8" />
 
         <Button
             android:id="@+id/buttonPara2"
