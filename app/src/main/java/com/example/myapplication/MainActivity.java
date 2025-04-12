@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -13,6 +14,45 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean[] isExpanded = new boolean[]{false, false, false};
 
+    private void createExpandable(LinearLayout container, int index, String headerName, Pair<String, View.OnClickListener>[] buttons)
+    {
+        View sectionView = getLayoutInflater().inflate(R.layout.section_layout, null);
+        container.addView(sectionView);
+
+        LinearLayout header = sectionView.findViewById(R.id.headerLayout);
+        if(!headerName.isEmpty())
+        {
+            TextView text = header.findViewById(R.id.headerText);
+            text.setText(headerName);
+        }
+        LinearLayout content = sectionView.findViewById(R.id.expandableContent);
+        TextView arrow = sectionView.findViewById(R.id.headerArrow);
+
+        header.setOnClickListener(v -> {
+            if (isExpanded[index]) {
+                content.setVisibility(View.GONE);
+                arrow.setText("▼");
+            } else {
+                content.setVisibility(View.VISIBLE);
+                arrow.setText("▲");
+            }
+            isExpanded[index] = !isExpanded[index];
+        });
+
+        for(Pair<String, View.OnClickListener> button : buttons)
+        {
+            View row = getLayoutInflater().inflate(R.layout.item_row, content, false);
+
+            TextView rowText = row.findViewById(R.id.textView);
+            rowText.setText(button.first);
+
+            Button buton = row.findViewById(R.id.button);
+            buton.setOnClickListener(button.second);
+
+            content.addView(row);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,42 +60,28 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout container = findViewById(R.id.mainContainer);
 
-        for (int i = 0; i < 3; i++) {
-            final int index = i;
-            View sectionView = getLayoutInflater().inflate(R.layout.section_layout, null);
-            container.addView(sectionView);
+        Pair<String, View.OnClickListener>[] pairs = new Pair[]{
+              new Pair<String, View.OnClickListener>("XYZ", v -> {
+                  Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                  startActivity(intent);
+              }),
+              new Pair<String, View.OnClickListener>("XYZ", v -> {
+                   Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                   startActivity(intent);
+              }),
+        };
 
-            LinearLayout header = sectionView.findViewById(R.id.headerLayout);
-            LinearLayout content = sectionView.findViewById(
-                    sectionView.getResources().getIdentifier(
-                            "expandableContent" + (i + 1),
-                            "id",
-                            getPackageName()
-                    )
-            );
-            TextView arrow = sectionView.findViewById(R.id.headerArrow);
+        Pair<String, View.OnClickListener>[] inf_03_pairs = new Pair[]{
+                new Pair<String, View.OnClickListener>("1 losowe pytanie", v -> {
+                    Intent intent = new Intent(MainActivity.this, MainActivity4.class);
+                    startActivity(intent);
+                }),
+        };
 
-            header.setOnClickListener(v -> {
-                if (isExpanded[index]) {
-                    content.setVisibility(View.GONE);
-                    arrow.setText("▼");
-                } else {
-                    content.setVisibility(View.VISIBLE);
-                    arrow.setText("▲");
-                }
-                isExpanded[index] = !isExpanded[index];
-            });
+        createExpandable(container, 0, "inf 03", inf_03_pairs);
 
-            Button button = sectionView.findViewById(R.id.button1);
-            button.setOnClickListener(v -> {
-                Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-                startActivity(intent);
-            });
-            Button button2 = sectionView.findViewById(R.id.button2);
-            button2.setOnClickListener(v -> {
-                Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                startActivity(intent);
-            });
+        for (int i = 1; i < 4; i++) {
+            createExpandable(container, i, "", pairs);
         }
     }
 }
