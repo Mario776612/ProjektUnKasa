@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ZLE PIZDEEC!"
+            android:text="Źle!"
             android:textAlignment="center"
             android:textSize="36sp" />
 
@@ -30,10 +30,10 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Poehali"
-            android:textAlignment="center"
-            android:textSize="18sp"
             android:backgroundTint="@color/red"
-            android:textColor="@color/light_gray"/>
+            android:text="Dalej"
+            android:textAlignment="center"
+            android:textColor="@color/light_gray"
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>
