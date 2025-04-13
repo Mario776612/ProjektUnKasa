@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DatabaseHelper.init(this);
 
         LinearLayout container = findViewById(R.id.mainContainer);
 
@@ -72,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
         };
 
         Pair<String, View.OnClickListener>[] inf_03_pairs = new Pair[]{
-                new Pair<String, View.OnClickListener>("1 losowe pytanie", v -> {
+                new Pair<String, View.OnClickListener>("Losowe pytania", v -> {
                     Intent intent = new Intent(MainActivity.this, MainActivity4.class);
+                    intent.putExtra("query", "SELECT * FROM pytania_inf03 ORDER BY RANDOM() LIMIT 1");
                     startActivity(intent);
                 }),
         };
