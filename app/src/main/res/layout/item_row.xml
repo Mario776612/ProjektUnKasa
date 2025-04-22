@@ -19,4 +19,15 @@
         android:layout_marginStart="16dp"
         android:text="XYZ"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end"
+        android:layout_marginEnd="10dp"
+        android:text="\u2713"
+        android:textSize="30sp"
+        android:textColor="@color/green"
+        android:visibility="gone"/>
 </LinearLayout>
