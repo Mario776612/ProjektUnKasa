@@ -32,17 +32,23 @@ public class MainActivity extends AppCompatActivity {
               new Lesson("XYZ",
                       v -> {
                               Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                              intent.putExtra("lesson", 0);
                               startActivity(intent);
-                            },
-                      false),
+                            }
+                      ),
               new Lesson("XYZ",
                       v -> {
                                Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                               intent.putExtra("lesson", 1);
                                startActivity(intent);
-                            },
-                      false),
+                            }
+                      ),
         };
 
+        Intent previousLessonIntent = getIntent();
+        int lessonFinished = previousLessonIntent.getIntExtra("finished", -1);
+        if(lessonFinished >= 0)
+            lessons[lessonFinished].complete();
 
         Lesson[] inf03 = new Lesson[]
                 {
@@ -51,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = new Intent(MainActivity.this, MainActivity4.class);
                                     intent.putExtra("query", "SELECT * FROM pytania_inf03 ORDER BY RANDOM() LIMIT 1");
                                     startActivity(intent);
-                                },
-                                false),
+                                }),
                 };
+
+
 
         Expandable inf03_expandable = new Expandable("inf03", inf03);
         inf03_expandable.createExpandable();

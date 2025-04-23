@@ -18,94 +18,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/buttonPara1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="31dp"
-            android:layout_marginEnd="8dp"
-            android:text="Para 1"
-            app:layout_constraintEnd_toStartOf="@id/buttonPara2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-        <Button
-            android:id="@+id/buttonPara6"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:text="Para 6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/buttonPara5"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara4" />
-
-        <Button
-            android:id="@+id/buttonPara3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="8dp"
-            android:text="Para 3"
-            app:layout_constraintEnd_toStartOf="@id/buttonPara4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara1" />
-
-        <Button
-            android:id="@+id/buttonPara7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:text="Para 7"
-            app:layout_constraintEnd_toStartOf="@id/buttonPara8"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara5" />
-
-        <Button
-            android:id="@+id/buttonPara4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:text="Para 4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/buttonPara3"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara2" />
-
-        <Button
-            android:id="@+id/buttonPara8"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:text="Para 8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/buttonPara7"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara6" />
-
-        <Button
-            android:id="@+id/buttonPara5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:text="Para 5"
-            app:layout_constraintEnd_toStartOf="@id/buttonPara6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonPara3" />
-
-        <Button
-            android:id="@+id/buttonPara2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="49dp"
-            android:text="Para 2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/buttonPara1"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
-
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
@@ -116,5 +28,92 @@
             app:layout_constraintStart_toEndOf="@+id/textView2"
             app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/buttonContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/textView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
 
+                <com.example.myapplication.CheckableButtonGroup
+                    android:id="@+id/groupLeft"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingEnd="8dp">
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 1"
+                            android:layout_marginBottom="10dp"/>
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 2"
+                            android:layout_marginBottom="10dp"/>
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 3"
+                            android:layout_marginBottom="10dp"/>
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 4"
+                            android:layout_marginBottom="10dp"/>
+                </com.example.myapplication.CheckableButtonGroup>
+
+                <com.example.myapplication.CheckableButtonGroup
+                    android:id="@+id/groupRight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="8dp">
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 4"
+                            android:layout_marginBottom="10dp"/>
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 3"
+                            android:layout_marginBottom="10dp"/>
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 2"
+                            android:layout_marginBottom="10dp"/>
+
+                        <com.example.myapplication.CheckableButton
+                            android:id="@+id/buttonPara8"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Para 1"
+                            android:layout_marginBottom="10dp"/>
+                </com.example.myapplication.CheckableButtonGroup>
+
+        </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

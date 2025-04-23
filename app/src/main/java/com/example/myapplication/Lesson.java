@@ -5,11 +5,21 @@ import android.view.View;
 public class Lesson {
     public String title;
     public View.OnClickListener clickListener;
-    public boolean completed;
-    public Lesson(String title, View.OnClickListener clickListener, boolean completed)
+    private boolean completed;
+    public Lesson(String title, View.OnClickListener clickListener)
     {
         this.title = title;
         this.clickListener = clickListener;
-        this.completed = completed;
+        this.completed = false;
+    }
+
+    public boolean isCompleted()
+    {
+        return completed;
+    }
+
+    public void complete()
+    {
+        completed = true;
     }
 }

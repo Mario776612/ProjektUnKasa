@@ -1,6 +1,14 @@
 package com.example.myapplication;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity2 extends AppCompatActivity {
 
+    private int lesson;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +29,88 @@ public class MainActivity2 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Intent intent = getIntent();
+        lesson = intent.getIntExtra("lesson", 0);
+
+        CheckableButtonGroup left = findViewById(R.id.groupLeft);
+        CheckableButtonGroup right = findViewById(R.id.groupRight);
+
+        setButtonListenerForGroup(left);
+        setButtonListenerForGroup(right);
+    }
+
+    public boolean isAnyButtonVisible()
+    {
+        CheckableButton[] left = ((CheckableButtonGroup)findViewById(R.id.groupLeft)).getButtons();
+
+        for(CheckableButton button : left)
+        {
+            if(button.getVisibility() == VISIBLE)
+                return true;
+        }
+        return false;
+    }
+
+
+    public void doSelectedButtonsShareSameText() {
+        CheckableButtonGroup left = findViewById(R.id.groupLeft);
+        CheckableButtonGroup right = findViewById(R.id.groupRight);
+
+        CheckableButton selectedButtonLeft = left.getCheckedButton();
+        CheckableButton selectedButtonRight = right.getCheckedButton();
+
+        if (selectedButtonLeft != null && selectedButtonRight != null) {
+            String leftText = selectedButtonLeft.getText().toString();
+            String rightText = selectedButtonRight.getText().toString();
+            if(leftText.equals(rightText))
+            {
+                selectedButtonLeft.setVisibility(GONE);
+                selectedButtonRight.setVisibility(GONE);
+                left.clearSelection();
+                right.clearSelection();
+            }
+            else {
+                selectedButtonLeft.setBackgroundColor(Color.RED);
+                selectedButtonRight.setBackgroundColor(Color.RED);
+                new Handler(Looper.getMainLooper()).postDelayed(this::fail, 1000);
+            }
+            if(!isAnyButtonVisible())
+            {
+                complete();
+            }
+        }
+    }
+
+    private void setButtonListenerForGroup(CheckableButtonGroup group) {
+        for (int i = 0; i < group.getChildCount(); i++) {
+            View child = group.getChildAt(i);
+
+            if (child instanceof CheckableButton) {
+                CheckableButton button = (CheckableButton) child;
+                button.addOnCheckedChangeListener((btn, isChecked) -> {
+                    if (isChecked) {
+                        doSelectedButtonsShareSameText();
+                    }
+                });
+            }
+        }
+    }
+
+    private void complete()
+    {
+        Intent intent = new Intent(MainActivity2.this, MainActivity.class);
+        intent.putExtra("finished", lesson);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void fail()
+    {
+        Intent intent = new Intent(MainActivity2.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

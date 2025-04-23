@@ -59,7 +59,7 @@ public class Expandable {
             TextView checkmark = row.findViewById(R.id.textView2);
 
             int visibility;
-            if(button.completed)
+            if(button.isCompleted())
                 visibility = VISIBLE;
             else
                 visibility = GONE;
