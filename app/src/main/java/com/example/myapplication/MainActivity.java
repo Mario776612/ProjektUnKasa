@@ -25,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         DatabaseHelper.init(this);
 
+        TextView LevelDisplay = findViewById(R.id.textView3);
+        int XpPoints = getResources().getInteger(R.integer.XpPoints);
+        LevelDisplay.setText("Level: " + String.valueOf(XpPoints));
+
+
         Globals.mainContainer = findViewById(R.id.mainContainer);
         Globals.mainInflater = getLayoutInflater();
 
