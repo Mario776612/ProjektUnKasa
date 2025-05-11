@@ -5,7 +5,9 @@ import static android.icu.text.DisplayContext.LENGTH_SHORT;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.icu.text.MessageFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -20,6 +22,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,23 +33,59 @@ import java.util.Optional;
 public class MainActivity4 extends AppCompatActivity {
 
     private boolean clickable = true;
-    private String query;
+    private boolean isINF;
+    private int lessonNumber;
+    private int initialTaskNumber;
+    private int taskNumber;
+    private int taskCount;
+    private int correctTasks;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main4);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        Intent intent = getIntent();
+        lessonNumber = intent.getIntExtra("lessonNumber", -1);
+
+        String numberQuery = "SELECT id FROM 'questions' WHERE lesson_id == "+lessonNumber;
+        Cursor numberCursor = DatabaseHelper.getData(numberQuery, DatabaseHelper.DB_NAME_2);
+        int num=1;
+        if(numberCursor.moveToFirst())
+        {
+            num = numberCursor.getInt(0);
+            initialTaskNumber = num;
+        }
+
+        taskNumber = intent.getIntExtra("taskNumber", num);
+        Log.i("ghujsdf", Integer.toString(taskNumber));
+        Log.i("ghujsdf", Integer.toString(num));
+        taskCount = intent.getIntExtra("taskCount", -1);
+        correctTasks = getIntent().getIntExtra("corrects", 0);
+        String type = intent.getStringExtra("type");
+        if(type != null && type.equals("inf03")) {
+            isINF = true;
+            questionsINF();
+        }
+        else if(type != null && type.equals("lesson") && lessonNumber != -1)
+        {
+            isINF = false;
+            questionsLesson(taskNumber, lessonNumber);
+        }
+    }
     private void correct(Button correctButton)
     {
         LinearLayout popup_placeholder = findViewById(R.id.answer_popup);
         View popup = getLayoutInflater().inflate(R.layout.correct_popup, popup_placeholder, false);
         Button button = popup.findViewById(R.id.button);
-        button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity4.this, MainActivity4.class);
+        button.setOnClickListener(v -> click(true));
 
-            String query = getIntent().getStringExtra("query");
-            intent.putExtra("query", query);
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            startActivity(intent);
-            finish();
-        });
         popup_placeholder.addView(popup);
 
         correctButton.setBackgroundColor(Color.argb(255, 0, 255, 0));
@@ -55,17 +96,8 @@ public class MainActivity4 extends AppCompatActivity {
         LinearLayout popup_placeholder = findViewById(R.id.answer_popup);
         View popup = getLayoutInflater().inflate(R.layout.incorrect_popup, popup_placeholder, false);
         Button button = popup.findViewById(R.id.button);
-        button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity4.this, MainActivity4.class);
+        button.setOnClickListener(v -> click(false));
 
-            String query = getIntent().getStringExtra("query");
-            intent.putExtra("query", query);
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            startActivity(intent);
-            finish();
-        });
         correctButton.setBackgroundColor(Color.argb(255, 0, 255, 0));
         selectedButton.setBackgroundColor(Color.argb(255, 255, 0, 0));
         popup_placeholder.addView(popup);
@@ -73,11 +105,43 @@ public class MainActivity4 extends AppCompatActivity {
 
     }
 
-    private void createQuestion(String question, String correct, String[] incorrects)
+    private void click(boolean addCorrect)
+    {
+        if(addCorrect)
+            correctTasks++;
+        if(taskCount != -1 && taskNumber >= taskCount+initialTaskNumber-1)
+        {
+            Intent intent = new Intent(MainActivity4.this, FinishedActivity.class);
+
+            intent.putExtra("corrects", correctTasks);
+            intent.putExtra("all", taskCount);
+            intent.putExtra("lessonIndex", lessonNumber);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(intent);
+            finish();
+            return;
+        }
+        Intent intent = new Intent(MainActivity4.this, MainActivity4.class);
+
+        String type = getIntent().getStringExtra("type");
+        intent.putExtra("type", type);
+        if(!isINF) {
+            intent.putExtra("lessonNumber", lessonNumber);
+            intent.putExtra("taskNumber", taskNumber+1);
+            intent.putExtra("taskCount", taskCount);
+        }
+        intent.putExtra("corrects", correctTasks);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(intent);
+        finish();
+    }
+
+    private void createQuestion(String question, String correct, String[] all)
     {
         ArrayList<String> answers = new ArrayList<>();
-        Collections.addAll(answers, incorrects);
-        answers.add(correct);
+        Collections.addAll(answers, all);
         answers.sort(String::compareToIgnoreCase);
 
         TextView question_text = findViewById(R.id.textView);
@@ -92,6 +156,8 @@ public class MainActivity4 extends AppCompatActivity {
         button2.setText(answers.get(1));
         button3.setText(answers.get(2));
         button4.setText(answers.get(3));
+
+        Log.i("mtmtmt", correct);
 
         Button[] buttons = new Button[]{button1, button2, button3, button4};
 
@@ -118,30 +184,52 @@ public class MainActivity4 extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main4);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    private void questionsLesson(int taskNumber, int lessonNumber)
+    {
 
-        Intent intent = getIntent();
-        String query = intent.getStringExtra("query");
-        this.query = query;
+        String query = "SELECT pytanie, odpowiedzi, poprawna_odpowiedz FROM 'questions' WHERE lesson_id == "+lessonNumber+" AND id == "+ taskNumber;
+        Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_2);
 
-        Cursor cursor = DatabaseHelper.getData(query);
+        if (cursor.moveToFirst()) {
+            String question = cursor.getString(0);
+            String correct = cursor.getString(2);
+            String[] all = formatAnswers(cursor.getString(1));
+
+            createQuestion(question, correct, all);
+            cursor.close();
+        }
+        else
+        {
+            Log.i("asd", ":(");
+        }
+    }
+
+    private void questionsINF()
+    {
+        String query = "SELECT * FROM pytania_inf03 ORDER BY RANDOM() LIMIT 1";
+        Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_1);
 
         if (cursor.moveToFirst()) {
             String question = cursor.getString(1);
             String correct = cursor.getString(2);
-            String[] incorrects = cursor.getString(3).split("\\|");
+            String[] all = cursor.getString(3).split("\\|");
 
-            createQuestion(question, correct, incorrects);
+            createQuestion(question, correct, all);
             cursor.close();
+        }
+    }
+
+    private String[] formatAnswers(String input) {
+        try {
+            JSONArray jsonArray = new JSONArray(input);
+            String[] result = new String[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                result[i] = jsonArray.getString(i);
+            }
+            return result;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new String[0];
         }
     }
 }

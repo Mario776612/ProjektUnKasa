@@ -31,8 +31,9 @@ public class CheckableButtonGroup extends LinearLayout {
         super.onViewAdded(child);
         if (child instanceof CheckableButton) {
             final CheckableButton button = (CheckableButton) child;
-            buttons.add(button);
 
+            buttons.add(button);
+            button.index = buttons.size();
             button.addOnCheckedChangeListener((btn, isChecked) -> {
                 if (isChecked) {
                     for (CheckableButton b : buttons) {
@@ -58,8 +59,8 @@ public class CheckableButtonGroup extends LinearLayout {
         return null;
     }
 
-    public CheckableButton[] getButtons()
+    public List<CheckableButton> getButtons()
     {
-        return buttons.toArray(new CheckableButton[0]);
+        return buttons;
     }
 }

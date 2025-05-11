@@ -3,7 +3,6 @@ package com.example.myapplication;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -54,7 +53,7 @@ public class Expandable {
             rowText.setText(button.title);
 
             Button buton = row.findViewById(R.id.button);
-            buton.setOnClickListener(button.clickListener);
+            buton.setOnClickListener(button.firstClickListener());
 
             TextView checkmark = row.findViewById(R.id.textView2);
 

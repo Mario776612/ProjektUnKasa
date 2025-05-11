@@ -16,9 +16,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Dictionary;
+import java.util.List;
+
 public class MainActivity2 extends AppCompatActivity {
 
+    private CheckableButtonGroup left;
+    private CheckableButtonGroup right;
     private int lesson;
+    private Dictionary<String, String> answers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +39,10 @@ public class MainActivity2 extends AppCompatActivity {
         Intent intent = getIntent();
         lesson = intent.getIntExtra("lesson", 0);
 
-        CheckableButtonGroup left = findViewById(R.id.groupLeft);
-        CheckableButtonGroup right = findViewById(R.id.groupRight);
+        left = findViewById(R.id.groupLeft);
+        right = findViewById(R.id.groupRight);
+
+        initAnswers();
 
         setButtonListenerForGroup(left);
         setButtonListenerForGroup(right);
@@ -42,7 +50,7 @@ public class MainActivity2 extends AppCompatActivity {
 
     public boolean isAnyButtonVisible()
     {
-        CheckableButton[] left = ((CheckableButtonGroup)findViewById(R.id.groupLeft)).getButtons();
+        List<CheckableButton> left = ((CheckableButtonGroup)findViewById(R.id.groupLeft)).getButtons();
 
         for(CheckableButton button : left)
         {
@@ -97,6 +105,13 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
+    private void initAnswers()
+    {
+        for(int i = 0; i < left.getChildCount(); i++)
+        {
+            answers.put(left.getButtons().get(i).text, right.getButtons().get(i).text);
+        }
+    }
     private void complete()
     {
         Intent intent = new Intent(MainActivity2.this, MainActivity.class);

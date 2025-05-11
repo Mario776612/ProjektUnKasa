@@ -13,6 +13,8 @@ import java.util.List;
 
 public class CheckableButton extends AppCompatButton implements View.OnClickListener {
 
+    public int index;
+    public String text;
     private boolean isChecked = false;
     private boolean checkedOnce = false;
     private final List<OnCheckedChangeListener> listeners = new ArrayList<>();
@@ -21,9 +23,10 @@ public class CheckableButton extends AppCompatButton implements View.OnClickList
         void onCheckedChanged(CheckableButton button, boolean isChecked);
     }
 
-    public CheckableButton(Context context) {
+    public CheckableButton(Context context, int index) {
         super(context);
         init();
+        this.index = index;
     }
 
     public CheckableButton(Context context, AttributeSet attrs) {

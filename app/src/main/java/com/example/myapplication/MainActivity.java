@@ -1,22 +1,19 @@
 package com.example.myapplication;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.content.Intent;
+import android.database.Cursor;
+import android.icu.text.MessageFormat;
 import android.os.Bundle;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    private Lesson[] lessons;
+public class MainActivity extends AppCompatActivity {
 
 
     @Override
@@ -33,45 +30,52 @@ public class MainActivity extends AppCompatActivity {
         Globals.mainContainer = findViewById(R.id.mainContainer);
         Globals.mainInflater = getLayoutInflater();
 
-        lessons = new Lesson[]{
-              new Lesson("XYZ",
-                      v -> {
-                              Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-                              intent.putExtra("lesson", 0);
-                              startActivity(intent);
-                            }
-                      ),
-              new Lesson("XYZ",
-                      v -> {
-                               Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                               intent.putExtra("lesson", 1);
-                               startActivity(intent);
-                            }
-                      ),
+        Lesson[] inf03 = new Lesson[] {
+                new INFLesson(this, "Losowe pytania", 0),
         };
-
-        Intent previousLessonIntent = getIntent();
-        int lessonFinished = previousLessonIntent.getIntExtra("finished", -1);
-        if(lessonFinished >= 0)
-            lessons[lessonFinished].complete();
-
-        Lesson[] inf03 = new Lesson[]
-                {
-                        new Lesson("Losowe pytania",
-                                v -> {
-                                    Intent intent = new Intent(MainActivity.this, MainActivity4.class);
-                                    intent.putExtra("query", "SELECT * FROM pytania_inf03 ORDER BY RANDOM() LIMIT 1");
-                                    startActivity(intent);
-                                }),
-                };
-
-
 
         Expandable inf03_expandable = new Expandable("inf03", inf03);
         inf03_expandable.createExpandable();
 
-        Expandable lessons_expandable = new Expandable("Lekcje", lessons);
-        lessons_expandable.createExpandable();
+        String query = "SELECT DISTINCT jezyk FROM 'lessons'";
+        Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_2);
+
+        if(cursor.moveToFirst()) {
+            do {
+                List<Lesson> lessons = new ArrayList<Lesson>();
+                String jezyk = cursor.getString(0);
+
+                String query2 = "SELECT numer FROM 'lessons' WHERE jezyk == '" + jezyk + "'";
+                Cursor cursor2 = DatabaseHelper.getData(query2, DatabaseHelper.DB_NAME_2);
+                int i = 1;
+                if(cursor2.moveToFirst()) {
+                    do {
+                        int numer = cursor2.getInt(0);
+                        String jezykCountQuery = "SELECT COUNT(lesson_id) FROM 'questions' WHERE lesson_id == "+numer;
+                        Cursor jezykCountCursor = DatabaseHelper.getData(jezykCountQuery, DatabaseHelper.DB_NAME_2);
+                        int count = 0;
+                        if(jezykCountCursor.moveToFirst())
+                        {
+                            count = jezykCountCursor.getInt(0);
+                        }
+                        QuizLesson lesson = new QuizLesson(this, Integer.toString(i++), numer, count);
+                        lessons.add(lesson);
+                    } while (cursor2.moveToNext());
+                }
+
+                cursor2.close();
+
+                Expandable expandable = new Expandable(jezyk, lessons.toArray(new Lesson[0]));
+                expandable.createExpandable();
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        Intent previousLessonIntent = getIntent();
+        int lessonFinished = previousLessonIntent.getIntExtra("finished", -1);
+        //if(lessonFinished >= 0)
+            //lessons[lessonFinished].complete();
+
 
     }
 

@@ -13,39 +13,46 @@ import java.io.OutputStream;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "data.sqlite";
+    public static final String DB_NAME_1 = "data.sqlite";
+    public static final String DB_NAME_2 = "quiz.db";
     private static String DB_PATH = "";
-    private static SQLiteDatabase mDatabase;
+    private static SQLiteDatabase mDatabase1;
+    private static SQLiteDatabase mDatabase2;
     private static Context mContext;
 
-    private DatabaseHelper(Context context) {
-        super(context, DB_NAME, null, 1);
+    private DatabaseHelper(Context context, String dbName) {
+        super(context, dbName, null, 1);
     }
 
     public static void init(Context context) {
         mContext = context.getApplicationContext();
         DB_PATH = mContext.getApplicationInfo().dataDir + "/databases/";
 
-        File dbFile = new File(DB_PATH + DB_NAME);
+        copyAndOpenDatabase(DB_NAME_1);
+        copyAndOpenDatabase(DB_NAME_2);
+    }
+
+    private static void copyAndOpenDatabase(String dbName) {
+        File dbFile = new File(DB_PATH + dbName);
         if (!dbFile.exists()) {
-            SQLiteOpenHelper dummyHelper = new DatabaseHelper(mContext);
+            SQLiteOpenHelper dummyHelper = new DatabaseHelper(mContext, dbName);
             dummyHelper.getReadableDatabase();
             try {
-                copyDBFile();
+                copyDBFile(dbName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        openDatabase();
+        openDatabase(dbName);
     }
 
-    private static void copyDBFile() throws IOException {
-        InputStream inputStream = mContext.getAssets().open(DB_NAME);
+    private static void copyDBFile(String dbName) throws IOException {
+        InputStream inputStream = mContext.getAssets().open(dbName);
         File dbFolder = new File(DB_PATH);
         if (!dbFolder.exists()) dbFolder.mkdir();
 
-        OutputStream outputStream = new FileOutputStream(DB_PATH + DB_NAME);
+        OutputStream outputStream = new FileOutputStream(DB_PATH + dbName);
 
         byte[] buffer = new byte[1024];
         int length;
@@ -58,18 +65,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         inputStream.close();
     }
 
-    private static void openDatabase() {
-        if (mDatabase == null || !mDatabase.isOpen()) {
-            String dbPath = DB_PATH + DB_NAME;
-            mDatabase = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+    private static void openDatabase(String dbName) {
+        String dbPath = DB_PATH + dbName;
+        if (dbName.equals(DB_NAME_1)) {
+            if (mDatabase1 == null || !mDatabase1.isOpen()) {
+                mDatabase1 = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+            }
+        } else if (dbName.equals(DB_NAME_2)) {
+            if (mDatabase2 == null || !mDatabase2.isOpen()) {
+                mDatabase2 = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+            }
         }
     }
 
-    public static Cursor getData(String query) {
-        if (mDatabase == null || !mDatabase.isOpen()) {
-            openDatabase();
+    public static Cursor getData(String query, String dbName) {
+        if (dbName.equals(DB_NAME_1)) {
+            if (mDatabase1 == null || !mDatabase1.isOpen()) {
+                openDatabase(DB_NAME_1);
+            }
+            return mDatabase1.rawQuery(query, null);
+        } else if (dbName.equals(DB_NAME_2)) {
+            if (mDatabase2 == null || !mDatabase2.isOpen()) {
+                openDatabase(DB_NAME_2);
+            }
+            return mDatabase2.rawQuery(query, null);
+        } else {
+            throw new IllegalArgumentException("Unknown database name: " + dbName);
         }
-        return mDatabase.rawQuery(query, null);
     }
 
     @Override
