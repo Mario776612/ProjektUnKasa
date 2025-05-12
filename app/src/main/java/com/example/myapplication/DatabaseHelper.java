@@ -5,17 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME_1 = "data.sqlite";
-    public static final String DB_NAME_2 = "quiz.db";
+    public static final String DB_NAME_2 = "lessons.db";
     public static final String DB_NAME_3 = "user_data.sqlite";
     private static String DB_PATH = "";
     private static SQLiteDatabase mDatabase1;
