@@ -5,15 +5,17 @@ import android.content.Intent;
 import android.view.View;
 
 public class INFLesson extends Lesson {
-    public INFLesson(Context context, String title, int index) {
+    private String inf;
+    public INFLesson(Context context, String title, int index, String inf) {
         super(context, title, index);
+        this.inf = inf;
     }
 
     @Override
     public View.OnClickListener firstClickListener() {
         return v -> {
             Intent intent = new Intent(this.context, MainActivity4.class);
-            intent.putExtra("type", "inf03");
+            intent.putExtra("type", inf);
             context.startActivity(intent);
         };
     }

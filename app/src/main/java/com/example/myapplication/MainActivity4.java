@@ -28,6 +28,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class MainActivity4 extends AppCompatActivity {
@@ -52,30 +53,32 @@ public class MainActivity4 extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        lessonNumber = intent.getIntExtra("lessonNumber", -1);
-
-        String numberQuery = "SELECT id FROM 'questions' WHERE lesson_id == "+lessonNumber;
-        Cursor numberCursor = DatabaseHelper.getData(numberQuery, DatabaseHelper.DB_NAME_2);
-        int num=1;
-        if(numberCursor.moveToFirst())
-        {
-            num = numberCursor.getInt(0);
-            initialTaskNumber = num;
-        }
-
-        taskNumber = intent.getIntExtra("taskNumber", num);
-        Log.i("ghujsdf", Integer.toString(taskNumber));
-        Log.i("ghujsdf", Integer.toString(num));
-        taskCount = intent.getIntExtra("taskCount", -1);
-        correctTasks = getIntent().getIntExtra("corrects", 0);
         String type = intent.getStringExtra("type");
+        correctTasks = getIntent().getIntExtra("corrects", 0);
+        taskCount = intent.getIntExtra("taskCount", 0);
+
         if(type != null && type.equals("inf03")) {
             isINF = true;
-            questionsINF();
+            questionsINF("inf03");
         }
-        else if(type != null && type.equals("lesson") && lessonNumber != -1)
+        else if(type != null && type.equals("inf04")) {
+            isINF = true;
+            questionsINF("inf04");
+        }
+        else if(type != null && type.equals("lesson"))
         {
             isINF = false;
+            lessonNumber = intent.getIntExtra("lessonNumber", -1);
+
+            String numberQuery = "SELECT id FROM 'questions' WHERE lesson_id == "+lessonNumber;
+            Cursor numberCursor = DatabaseHelper.getData(numberQuery, DatabaseHelper.DB_NAME_2);
+            int num=1;
+            if(numberCursor.moveToFirst())
+            {
+                num = numberCursor.getInt(0);
+                initialTaskNumber = num;
+            }
+            taskNumber = intent.getIntExtra("taskNumber", num);
             questionsLesson(taskNumber, lessonNumber);
         }
     }
@@ -109,7 +112,7 @@ public class MainActivity4 extends AppCompatActivity {
     {
         if(addCorrect)
             correctTasks++;
-        if(taskCount != -1 && taskNumber >= taskCount+initialTaskNumber-1)
+        if(taskCount != 0 && taskNumber >= taskCount+initialTaskNumber-1)
         {
             Intent intent = new Intent(MainActivity4.this, FinishedActivity.class);
 
@@ -157,8 +160,6 @@ public class MainActivity4 extends AppCompatActivity {
         button3.setText(answers.get(2));
         button4.setText(answers.get(3));
 
-        Log.i("mtmtmt", correct);
-
         Button[] buttons = new Button[]{button1, button2, button3, button4};
 
         Optional<Button> correctButtonMaybe = Arrays.stream(buttons)
@@ -198,21 +199,21 @@ public class MainActivity4 extends AppCompatActivity {
             createQuestion(question, correct, all);
             cursor.close();
         }
-        else
-        {
-            Log.i("asd", ":(");
-        }
     }
 
-    private void questionsINF()
+    private void questionsINF(String inf)
     {
-        String query = "SELECT * FROM pytania_inf03 ORDER BY RANDOM() LIMIT 1";
+        String query = "SELECT * FROM pytania_"+inf+" ORDER BY RANDOM() LIMIT 1";
         Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_1);
 
         if (cursor.moveToFirst()) {
             String question = cursor.getString(1);
             String correct = cursor.getString(2);
-            String[] all = cursor.getString(3).split("\\|");
+            String[] incorrect = cursor.getString(3).split("\\|");
+
+            List<String> list = new ArrayList<>(Arrays.asList(incorrect));
+            list.add(correct);
+            String[] all = list.toArray(new String[0]);
 
             createQuestion(question, correct, all);
             cursor.close();

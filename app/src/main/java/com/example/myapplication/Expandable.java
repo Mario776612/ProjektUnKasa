@@ -3,6 +3,7 @@ package com.example.myapplication;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;

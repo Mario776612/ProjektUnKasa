@@ -26,16 +26,27 @@ public class MainActivity extends AppCompatActivity {
         int XpPoints = getResources().getInteger(R.integer.XpPoints);
         LevelDisplay.setText("Level: " + String.valueOf(XpPoints));
 
-
         Globals.mainContainer = findViewById(R.id.mainContainer);
         Globals.mainInflater = getLayoutInflater();
 
+        Intent previousLessonIntent = getIntent();
+        int lessonFinished = previousLessonIntent.getIntExtra("finished", -1);
+        if(lessonFinished >= 0)
+            finishLesson(lessonFinished);
+
         Lesson[] inf03 = new Lesson[] {
-                new INFLesson(this, "Losowe pytania", 0),
+                new INFLesson(this, "Losowe pytania", -2, "inf03"),
         };
 
         Expandable inf03_expandable = new Expandable("inf03", inf03);
         inf03_expandable.createExpandable();
+
+        Lesson[] inf04 = new Lesson[] {
+                new INFLesson(this, "Losowe pytania", -1, "inf04"),
+        };
+
+        Expandable inf04_expandable = new Expandable("inf04", inf04);
+        inf04_expandable.createExpandable();
 
         String query = "SELECT DISTINCT jezyk FROM 'lessons'";
         Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_2);
@@ -59,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                             count = jezykCountCursor.getInt(0);
                         }
                         QuizLesson lesson = new QuizLesson(this, Integer.toString(i++), numer, count);
+                        if(isCompleted(numer))
+                            lesson.complete();
                         lessons.add(lesson);
                     } while (cursor2.moveToNext());
                 }
@@ -71,12 +84,33 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        Intent previousLessonIntent = getIntent();
-        int lessonFinished = previousLessonIntent.getIntExtra("finished", -1);
-        //if(lessonFinished >= 0)
-            //lessons[lessonFinished].complete();
+    }
 
+    private boolean isCompleted(int index)
+    {
+        String query = "SELECT * FROM user_data"; //chcialem to zrobic z WHERE, ale nie chcialo dzialac :(
+        Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_3);
 
+        if(cursor.moveToFirst()) {
+            do {
+                if(cursor.getInt(0) == index) {
+                    boolean getInt = cursor.getInt(1) == 1;
+                    cursor.close();
+                    return getInt;
+                }
+            } while(cursor.moveToNext());
+        }
+        cursor.close();
+        return false;
+    }
+    private void finishLesson(int index)
+    {
+        DatabaseHelper.update(3, index, 1);
+    }
+
+    private void unfinishLesson(int index)
+    {
+        DatabaseHelper.update(3, index, 0);
     }
 
 }
