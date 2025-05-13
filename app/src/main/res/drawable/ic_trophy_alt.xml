@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Kubek trofeum -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M6,3h12v3c0,2.76 -2.24,5 -5,5h-2c-2.76,0 -5,-2.24 -5,-5V3z" />
+
+    <!-- Uchwyt lewy -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M3,5h2c0,2.21 1.79,4 4,4v2c-3.31,0 -6,-2.69 -6,-6z" />
+
+    <!-- Uchwyt prawy -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M19,5h2c0,3.31 -2.69,6 -6,6v-2c2.21,0 4,-1.79 4,-4z" />
+
+    <!-- Noga -->
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M10,13h4v2h3v2H7v-2h3v-2z" />
+
+    <!-- Podstawa zamiast <rect>: prostokąt jako path -->
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M7,17h10v2H7z" />
+</vector>

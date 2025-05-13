@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Czasza -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M7,3h10v2c0,2.76 -2.24,5 -5,5s-5,-2.24 -5,-5V3z" />
+    <!-- Lewy uchwyt -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M5,4h1v2c0,1.66 1.34,3 3,3h1v1H9c-2.21,0 -4,-1.79 -4,-4V4z" />
+    <!-- Prawy uchwyt -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M19,4h-1v2c0,1.66 -1.34,3 -3,3h-1v1h1c2.21,0 4,-1.79 4,-4V4z" />
+    <!-- Trzon -->
+    <path
+        android:fillColor="#DAA520"
+        android:pathData="M11,10h2v3h-2z" />
+    <!-- Podstawa -->
+    <path
+        android:fillColor="#DAA520"
+        android:pathData="M9,14h6v2H9zM8,17h8v2H8z" />
+</vector>

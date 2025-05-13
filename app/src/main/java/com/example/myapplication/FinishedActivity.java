@@ -35,11 +35,24 @@ public class FinishedActivity extends AppCompatActivity {
         Button continueButton = findViewById(R.id.continueButton);
 
         continueButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FinishedActivity.this, MainActivity.class);
-            intent.putExtra("finished", index);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            DailyStrikeManager strikeManager = new DailyStrikeManager(FinishedActivity.this);
+
+            if (strikeManager.shouldShowStrikeToday()) {
+                strikeManager.markStrikeShownToday();
+
+                Intent intent = new Intent(FinishedActivity.this, DailyStrikeActivity.class);
+                intent.putExtra("lessonIndex", index);
+                startActivity(intent);
+                finish();
+            } else {
+                // Jeśli już pokazano daily strike dzisiaj, wróć od razu do MainActivity
+                Intent intent = new Intent(FinishedActivity.this, MainActivity.class);
+                intent.putExtra("finished", index);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
         });
+
     }
 }
