@@ -20,11 +20,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME_1 = "data.sqlite";
     public static final String DB_NAME_2 = "lessons.db";
-    public static final String DB_NAME_3 = "user_data.sqlite";
     private static String DB_PATH = "";
     private static SQLiteDatabase mDatabase1;
     private static SQLiteDatabase mDatabase2;
-    private static SQLiteDatabase mDatabase3;
     private static Context mContext;
 
     private DatabaseHelper(Context context, String dbName) {
@@ -36,18 +34,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             mDatabase1.execSQL(query);
         else if(database==2)
             mDatabase2.execSQL(query);
-        else if(database==3)
-            mDatabase3.execSQL(query);
-    }
-
-    public static void update(int database, int lessonIndex, int completedValue)
-    {
-        //inne bazy danych narazie nie potrzebne tu
-        if(database == 3) {
-            ContentValues values = new ContentValues();
-            values.put("is_completed", completedValue);
-            mDatabase3.update("user_data", values, "lesson_id=?", new String[]{Integer.toString(lessonIndex)});
-        }
     }
 
     public static void init(Context context) {
@@ -56,7 +42,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         copyAndOpenDatabase(DB_NAME_1);
         copyAndOpenDatabase(DB_NAME_2);
-        copyAndOpenDatabase(DB_NAME_3);
     }
 
     private static void copyAndOpenDatabase(String dbName) {
@@ -102,10 +87,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (mDatabase2 == null || !mDatabase2.isOpen()) {
                 mDatabase2 = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
             }
-        } else if (dbName.equals(DB_NAME_3)) {
-            if (mDatabase3 == null || !mDatabase3.isOpen()) {
-                mDatabase3 = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
-            }
         }
     }
 
@@ -120,11 +101,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 openDatabase(DB_NAME_2);
             }
             return mDatabase2.rawQuery(query, null);
-        } else if (dbName.equals(DB_NAME_3)) {
-            if (mDatabase3 == null || !mDatabase3.isOpen()) {
-                openDatabase(DB_NAME_3);
-            }
-            return mDatabase3.rawQuery(query, null);
         } else {
             throw new IllegalArgumentException("Unknown database name: " + dbName);
         }

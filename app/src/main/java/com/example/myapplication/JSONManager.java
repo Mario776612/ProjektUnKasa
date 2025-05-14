@@ -41,6 +41,8 @@ public class JSONManager {
             }
 
             root.put("lessons", lessonsArray);
+            root.put("points", 0);
+            root.put("level", 0);
             save(context, root);
         }
         catch(JSONException ex)
@@ -108,10 +110,10 @@ public class JSONManager {
     }
 
 
-    public static JSONArray array(Context context)
+    public static JSONArray array(Context context, String name)
     {
         try {
-            return root(context).getJSONArray("lessons");
+            return root(context).getJSONArray(name);
         } catch (JSONException e) {
             return new JSONArray();
         }

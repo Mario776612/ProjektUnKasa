@@ -26,10 +26,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DatabaseHelper.init(this);
+        initJSON();
 
         TextView LevelDisplay = findViewById(R.id.textView3);
         int XpPoints = getResources().getInteger(R.integer.XpPoints);
-        LevelDisplay.setText("Level: " + String.valueOf(XpPoints));
+        try {
+            LevelDisplay.setText("Level: " + JSONManager.root(this).getInt("level"));
+        } catch (JSONException e) {
+            Log.e("MainActivity -> onCreate", e.toString());
+        }
 
         Globals.mainContainer = findViewById(R.id.mainContainer);
         Globals.mainInflater = getLayoutInflater();
@@ -55,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         String query = "SELECT DISTINCT jezyk FROM 'lessons'";
         Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_2);
-        int lessonCounter = 0;
         if(cursor.moveToFirst()) {
             do {
                 List<Lesson> lessons = new ArrayList<Lesson>();
@@ -66,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 int i = 1;
                 if(cursor2.moveToFirst()) {
                     do {
-                        lessonCounter++;
                         int numer = cursor2.getInt(0);
                         String jezykCountQuery = "SELECT COUNT(lesson_id) FROM 'questions' WHERE lesson_id == "+numer;
                         Cursor jezykCountCursor = DatabaseHelper.getData(jezykCountQuery, DatabaseHelper.DB_NAME_2);
@@ -83,19 +86,29 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 cursor2.close();
-
                 Expandable expandable = new Expandable(jezyk, lessons.toArray(new Lesson[0]));
                 expandable.createExpandable();
             } while (cursor.moveToNext());
         }
-        if(!JSONManager.isInit(this))
-            JSONManager.init(this, lessonCounter);
         cursor.close();
 
     }
 
+    private void initJSON() {
+        String countQuery = "SELECT COUNT(*) FROM 'lessons'";
+        Cursor c = DatabaseHelper.getData(countQuery, DatabaseHelper.DB_NAME_2);
+        int lessonCounter = 0;
+        if(c.moveToFirst())
+        {
+            lessonCounter = c.getInt(0);
+        }
+
+        if(!JSONManager.isInit(this))
+            JSONManager.init(this, lessonCounter);
+    }
+
     private boolean isCompleted(int index) {
-        JSONArray lessons = JSONManager.array(this);
+        JSONArray lessons = JSONManager.array(this, "lessons");
         try {
             return lessons.getBoolean(index-1);
         } catch (JSONException e) {
