@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         String query = "SELECT DISTINCT jezyk FROM 'lessons'";
         Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_2);
-
+        int lessonCounter = 0;
         if(cursor.moveToFirst()) {
             do {
                 List<Lesson> lessons = new ArrayList<Lesson>();
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 int i = 1;
                 if(cursor2.moveToFirst()) {
                     do {
+                        lessonCounter++;
                         int numer = cursor2.getInt(0);
                         String jezykCountQuery = "SELECT COUNT(lesson_id) FROM 'questions' WHERE lesson_id == "+numer;
                         Cursor jezykCountCursor = DatabaseHelper.getData(jezykCountQuery, DatabaseHelper.DB_NAME_2);
@@ -83,35 +88,33 @@ public class MainActivity extends AppCompatActivity {
                 expandable.createExpandable();
             } while (cursor.moveToNext());
         }
+        if(!JSONManager.isInit(this))
+            JSONManager.init(this, lessonCounter);
         cursor.close();
 
     }
 
-    private boolean isCompleted(int index)
-    {
-        String query = "SELECT * FROM user_data"; //chcialem to zrobic z WHERE, ale nie chcialo dzialac :(
-        Cursor cursor = DatabaseHelper.getData(query, DatabaseHelper.DB_NAME_3);
-
-        if(cursor.moveToFirst()) {
-            do {
-                if(cursor.getInt(0) == index) {
-                    boolean getInt = cursor.getInt(1) == 1;
-                    cursor.close();
-                    return getInt;
-                }
-            } while(cursor.moveToNext());
+    private boolean isCompleted(int index) {
+        JSONArray lessons = JSONManager.array(this);
+        try {
+            return lessons.getBoolean(index-1);
+        } catch (JSONException e) {
+            Log.e("MainActivity -> isCompleted", e.toString());
+            return false;
         }
-        cursor.close();
-        return false;
+
     }
     private void finishLesson(int index)
     {
-        DatabaseHelper.update(3, index, 1);
-    }
+        JSONObject root = JSONManager.root(this);
+        try {
+            JSONArray lessons = root.getJSONArray("lessons");
+            lessons.put( index-1,true);
 
-    private void unfinishLesson(int index)
-    {
-        DatabaseHelper.update(3, index, 0);
+            JSONManager.save(this, root);
+        } catch (JSONException e) {
+            Log.e("MainActivity -> finishLesson", e.toString());
+        }
     }
 
 }
