@@ -30,6 +30,37 @@ public class JSONManager {
             Log.e("JSONManager -> save", e.toString());
         }
     }
+
+    public static void generateQuests(Context context) {
+        try {
+            JSONObject root = root(context);
+            JSONArray quests = new JSONArray();
+
+            int streakGoal = (int)(Math.random() * 7) + 1;
+            int tasksGoal = (int)(Math.random() * 10) + 1;
+            int minutesGoal = (int)(Math.random() * 11) + 10;
+
+            quests.put(new JSONObject()
+                    .put("type", "streak")
+                    .put("goal", streakGoal)
+                    .put("completed", false));
+
+            quests.put(new JSONObject()
+                    .put("type", "tasks")
+                    .put("goal", tasksGoal)
+                    .put("completed", false));
+
+            quests.put(new JSONObject()
+                    .put("type", "minutes")
+                    .put("goal", minutesGoal)
+                    .put("completed", false));
+
+            root.put("quests", quests);
+            save(context, root);
+        } catch (JSONException e) {
+            Log.e("JSONManager", "generateQuests error", e);
+        }
+    }
     public static void init(Context context, int lessonCount)
     {
         try {
@@ -136,6 +167,26 @@ public class JSONManager {
             return root(context).getJSONArray(name);
         } catch (JSONException e) {
             return new JSONArray();
+        }
+    }
+
+    public static JSONArray getQuests(Context context) {
+        try {
+            return root(context).getJSONArray("quests");
+        } catch (JSONException e) {
+            return new JSONArray();
+        }
+    }
+
+    public static void completeQuest(Context context, int index) {
+        try {
+            JSONObject root = root(context);
+            JSONArray quests = root.getJSONArray("quests");
+            JSONObject quest = quests.getJSONObject(index);
+            quest.put("completed", true);
+            save(context, root);
+        } catch (JSONException e) {
+            Log.e("JSONManager", "completeQuest error", e);
         }
     }
 }

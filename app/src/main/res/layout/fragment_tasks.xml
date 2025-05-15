@@ -2,39 +2,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#272838">
+    android:background="#272838"
+    tools:context=".TasksFragment">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
+        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#272838">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/MainText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CodeCat"
+            android:textColor="#785589"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="Poziom: 0"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
         <LinearLayout
-            android:id="@+id/mainContainer"
+            android:id="@+id/quests_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/darker_gray"
+            android:padding="12dp" />
 
-            <TextView
-                android:id="@+id/MainText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CodeCat"
-                android:textColor="#785589"
-                android:textSize="48sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:text="Poziom: 0"
-                android:textColor="@android:color/white"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>
