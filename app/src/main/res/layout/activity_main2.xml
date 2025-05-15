@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity2">
+    tools:context=".MainActivity2"
+    android:background="#272838">
 
         <TextView
             android:id="@+id/textView2"
@@ -14,7 +15,7 @@
             android:text="CodeCat"
             android:textSize="48sp"
             android:textStyle="bold"
-            android:textColor="#2E7D32"
+            android:textColor="#785589"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
