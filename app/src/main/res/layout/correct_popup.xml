@@ -25,8 +25,8 @@
             android:layout_weight="1"
             android:text="Dobrze!"
             android:textAlignment="center"
-            android:textSize="36sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="36sp" />
 
         <Button
             android:id="@+id/button"

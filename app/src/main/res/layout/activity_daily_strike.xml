@@ -14,7 +14,10 @@
         android:text="Dzienna passa"
         android:textColor="@color/white"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,20 +36,12 @@
         <ImageView android:id="@+id/day_7" android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_trophy_alt" android:layout_margin="4dp"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/ile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dni: "
-        android:textAlignment="center"
-        android:textSize="34sp" />
-
     <Button
         android:id="@+id/backToMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button"
-        android:padding="12dp"
         android:text="Powrót do menu"
-        android:textColor="#fff" />
+        android:background="@drawable/rounded_button"
+        android:textColor="#fff"
+        android:padding="12dp"/>
 </LinearLayout>
