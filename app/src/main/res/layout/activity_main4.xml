@@ -7,14 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity4"
     tools:layout_editor_absoluteX="3dp"
-    tools:layout_editor_absoluteY="0dp">
+    tools:layout_editor_absoluteY="0dp"
+    android:background="#272838">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CodeCat"
-        android:textColor="#2E7D32"
+        android:textColor="#785589"
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +39,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:text="Pytanie"
-        android:textColor="#333333"
+        android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

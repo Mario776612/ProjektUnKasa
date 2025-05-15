@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#272838">
 
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -24,16 +25,17 @@
             android:layout_weight="1"
             android:text="Dobrze!"
             android:textAlignment="center"
+            android:textColor="@color/white"
             android:textSize="36sp" />
 
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
+            android:backgroundTint="#00b38a"
             android:text="Dalej"
             android:textAlignment="center"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/white"
             android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

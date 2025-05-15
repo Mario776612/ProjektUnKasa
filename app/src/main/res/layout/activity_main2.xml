@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity2">
+    tools:context=".MainActivity2"
+    android:background="#272838">
 
         <TextView
             android:id="@+id/textView2"
@@ -14,7 +15,7 @@
             android:text="CodeCat"
             android:textSize="48sp"
             android:textStyle="bold"
-            android:textColor="#2E7D32"
+            android:textColor="#785589"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +39,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginEnd="16dp"
+           >
+
 
                 <com.example.myapplication.CheckableButtonGroup
                     android:id="@+id/groupLeft"
@@ -46,13 +49,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:paddingEnd="8dp">
+                    android:paddingEnd="8dp"
+                    >
 
                         <com.example.myapplication.CheckableButton
                             android:id="@+id/buttonPara1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Para 1"
+                            android:background="#775489"
+                            android:textColor="@color/white"
                             android:layout_marginBottom="10dp"/>
 
                         <com.example.myapplication.CheckableButton
