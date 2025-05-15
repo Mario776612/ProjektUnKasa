@@ -48,6 +48,7 @@ public class UserFragment extends Fragment {
 
         JSONManager.init(context, lessonCounter);
         DailyStreakManager.resetStreak(context);
+
         Toast.makeText(context, "Zresetowano postęp!", LENGTH_SHORT).show();
     }
 }

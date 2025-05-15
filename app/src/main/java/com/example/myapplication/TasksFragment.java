@@ -26,8 +26,9 @@ public class TasksFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
         context = getContext();
 
+        // Only generate if not already present
         if (JSONManager.getQuests(context).length() == 0) {
-            JSONManager.generateQuests(context);
+            generateRandomQuests(context);
         }
 
         LinearLayout questsContainer = view.findViewById(R.id.quests_container);
@@ -41,13 +42,11 @@ public class TasksFragment extends Fragment {
                 int goal = quest.getInt("goal");
                 boolean completed = quest.getBoolean("completed");
 
-                String description = type.equals("streak")
-                        ? "Ucz się przez " + goal + " dni z rzędu"
-                        : type.equals("tasks")
-                        ? "Ukończ " + goal + " zadań"
-                        : type.equals("minutes")
-                        ? "Ucz się przez " + goal + " minut"
-                        : "Nieznane zadanie";
+                String description =
+                    type.equals("streak") ? "Ucz się przez " + goal + " dni z rzędu" :
+                    type.equals("tasks") ? "Ukończ " + goal + " zadań" :
+                    type.equals("minutes") ? "Ucz się przez " + goal + " minut" :
+                    "Nieznane zadanie";
 
                 View questView = inflater.inflate(R.layout.quest_item, questsContainer, false);
 
@@ -58,7 +57,10 @@ public class TasksFragment extends Fragment {
                 redeemButton.setEnabled(!completed);
 
                 redeemButton.setOnClickListener(v -> {
-                    // TODO: Add real condition check before completion
+                    if(questIndex == 0)
+                    {
+
+                    }
                     JSONManager.completeQuest(context, questIndex);
                     redeemButton.setEnabled(false);
                     Toast.makeText(context, "Zadanie ukończone!", Toast.LENGTH_SHORT).show();
@@ -72,5 +74,36 @@ public class TasksFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private static void generateRandomQuests(Context context) {
+        try {
+            JSONObject root = JSONManager.root(context);
+            JSONArray quests = new JSONArray();
+
+            int streakGoal = (int)(Math.random() * 7) + 1; //od 1 do 7
+            int tasksGoal = (int)(Math.random() * 10) + 1; //od 1 do 10
+            int minutesGoal = (int)(Math.random() * 11) + 10; //od 10 do 20
+
+            quests.put(new JSONObject()
+                    .put("type", "streak")
+                    .put("goal", streakGoal)
+                    .put("completed", false));
+
+            quests.put(new JSONObject()
+                    .put("type", "tasks")
+                    .put("goal", tasksGoal)
+                    .put("completed", false));
+
+            quests.put(new JSONObject()
+                    .put("type", "minutes")
+                    .put("goal", minutesGoal)
+                    .put("completed", false));
+
+            root.put("quests", quests);
+            JSONManager.save(context, root);
+        } catch (JSONException e) {
+            Log.e("TasksFragment -> generateRandomQuests", e.toString());
+        }
     }
 }

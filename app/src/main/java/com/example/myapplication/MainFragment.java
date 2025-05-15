@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -45,9 +48,11 @@ public class MainFragment extends Fragment {
         if(lessonFinished >= 0 && status != null) {
             if (!isStatus(lessonFinished, "finished"))
                 statusLesson(lessonFinished, status);
-            requireActivity().getIntent().removeExtra("finished");
-            requireActivity().getIntent().removeExtra("status");
         }
+
+        requireActivity().getIntent().removeExtra("finished");
+        requireActivity().getIntent().removeExtra("status");
+
         createLessons();
 
         return view;
@@ -120,10 +125,11 @@ public class MainFragment extends Fragment {
         try {
             JSONObject root = JSONManager.root(context);
             JSONArray lessons = root.getJSONArray("lessons");
+            lessons.put(index - 1, true);
             lessons.put(index - 1, status);
             JSONManager.save(context, root);
         } catch (JSONException e) {
             Log.e("HomeFragment -> finishLesson", e.toString());
         }
-    }
+        }
 }

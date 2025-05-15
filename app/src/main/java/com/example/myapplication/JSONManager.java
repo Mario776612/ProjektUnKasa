@@ -30,51 +30,18 @@ public class JSONManager {
             Log.e("JSONManager -> save", e.toString());
         }
     }
-
-    public static void generateQuests(Context context) {
-        try {
-            JSONObject root = root(context);
-            JSONArray quests = new JSONArray();
-
-            int streakGoal = (int)(Math.random() * 7) + 1;
-            int tasksGoal = (int)(Math.random() * 10) + 1;
-            int minutesGoal = (int)(Math.random() * 11) + 10;
-
-            quests.put(new JSONObject()
-                    .put("type", "streak")
-                    .put("goal", streakGoal)
-                    .put("completed", false));
-
-            quests.put(new JSONObject()
-                    .put("type", "tasks")
-                    .put("goal", tasksGoal)
-                    .put("completed", false));
-
-            quests.put(new JSONObject()
-                    .put("type", "minutes")
-                    .put("goal", minutesGoal)
-                    .put("completed", false));
-
-            root.put("quests", quests);
-            save(context, root);
-        } catch (JSONException e) {
-            Log.e("JSONManager", "generateQuests error", e);
-        }
-    }
     public static void init(Context context, int lessonCount)
     {
         try {
-            JSONObject root = new JSONObject();
+            JSONObject root = root(context);
             JSONArray lessonsArray = new JSONArray();
 
             for (int i = 1; i <= lessonCount; i++) {
-                lessonsArray.put("unfinished");
+                lessonsArray.put(false);
             }
 
             root.put("lessons", lessonsArray);
             root.put("points", 0);
-            root.put("streak", 0);
-            root.put("lastShown", (long)0);
             root.put("level", 0);
             save(context, root);
         }
@@ -98,24 +65,6 @@ public class JSONManager {
     public static File getFile(Context context, String path)
     {
         return new File(context.getFilesDir(), path);
-    }
-
-    public static long getLong(Context context, String name)
-    {
-        try {
-            return root(context).getLong(name);
-        } catch (JSONException e) {
-            return 0;
-        }
-    }
-
-    public static int getInt(Context context, String name)
-    {
-        try {
-            return root(context).getInt(name);
-        } catch (JSONException e) {
-            return 0;
-        }
     }
 
     public static JSONObject load(Context context) {
@@ -160,6 +109,23 @@ public class JSONManager {
         }
     }
 
+    public static long getLong(Context context, String name)
+    {
+        try {
+            return root(context).getLong(name);
+        } catch (JSONException e) {
+            return 0;
+        }
+    }
+
+    public static int getInt(Context context, String name)
+    {
+        try {
+            return root(context).getInt(name);
+        } catch (JSONException e) {
+            return 0;
+        }
+    }
 
     public static JSONArray array(Context context, String name)
     {
@@ -186,7 +152,7 @@ public class JSONManager {
             quest.put("completed", true);
             save(context, root);
         } catch (JSONException e) {
-            Log.e("JSONManager", "completeQuest error", e);
+            Log.e("JSONManager -> completeQuest", e.toString());
         }
     }
 }

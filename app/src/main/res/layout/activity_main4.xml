@@ -5,10 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity4"
-    tools:layout_editor_absoluteX="3dp"
-    tools:layout_editor_absoluteY="0dp"
-    android:background="#272838">
+    android:background="#272838"
+    tools:context=".MainActivity4">
 
     <TextView
         android:id="@+id/textView2"
@@ -41,7 +39,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Pytanie"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="22sp"
         android:textStyle="bold"
         android:padding="16dp"

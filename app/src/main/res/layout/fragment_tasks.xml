@@ -5,6 +5,7 @@
     android:background="#272838"
     tools:context=".TasksFragment">
 
+
     <LinearLayout
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
@@ -41,5 +42,4 @@
             android:padding="12dp" />
 
     </LinearLayout>
-
 </RelativeLayout>
