@@ -41,9 +41,11 @@ public class MainFragment extends Fragment {
         Globals.mainInflater = getLayoutInflater();
 
         int lessonFinished = requireActivity().getIntent().getIntExtra("finished", -1);
-        if(lessonFinished >= 0)
-            finishLesson(lessonFinished);
-
+        String status = requireActivity().getIntent().getStringExtra("status");
+        if(lessonFinished >= 0 && status != null) {
+            if (!isStatus(lessonFinished, "finished"))
+                statusLesson(lessonFinished, status);
+        }
         createLessons();
 
         return view;
@@ -79,7 +81,8 @@ public class MainFragment extends Fragment {
                         jezykCountCursor.close();
 
                         QuizLesson lesson = new QuizLesson(context, Integer.toString(i++), numer, count);
-                        if(isCompleted(numer)) lesson.complete();
+                        if(isStatus(numer, "finished")) lesson.complete();
+                        else if(isStatus(numer, "tried")) lesson.tried();
                         lessons.add(lesson);
                     } while (cursor2.moveToNext());
                 }
@@ -101,21 +104,21 @@ public class MainFragment extends Fragment {
             JSONManager.init(context, lessonCounter);
     }
 
-    private boolean isCompleted(int index) {
+    private boolean isStatus(int index, String status) {
         try {
             JSONArray lessons = JSONManager.array(context, "lessons");
-            return lessons.getBoolean(index - 1);
+            return lessons.getString(index - 1).equals(status);
         } catch (JSONException e) {
             Log.e("HomeFragment -> isCompleted", e.toString());
             return false;
         }
     }
 
-    private void finishLesson(int index) {
+    private void statusLesson(int index, String status) {
         try {
             JSONObject root = JSONManager.root(context);
             JSONArray lessons = root.getJSONArray("lessons");
-            lessons.put(index - 1, true);
+            lessons.put(index - 1, status);
             JSONManager.save(context, root);
         } catch (JSONException e) {
             Log.e("HomeFragment -> finishLesson", e.toString());

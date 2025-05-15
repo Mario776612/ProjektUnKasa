@@ -33,18 +33,25 @@ public class FinishedActivity extends AppCompatActivity {
         Button continueButton = findViewById(R.id.continueButton);
 
         continueButton.setOnClickListener(v -> {
-            DailyStrikeManager strikeManager = new DailyStrikeManager(FinishedActivity.this);
 
-            if (strikeManager.shouldShowStrikeToday()) {
-                strikeManager.markStrikeShownToday();
+            if (DailyStreakManager.shouldShowStreakToday(this)) {
+                DailyStreakManager.markStreakShownToday(this);
 
                 Intent intent = new Intent(FinishedActivity.this, DailyStrikeActivity.class);
                 intent.putExtra("lessonIndex", index);
+                if(correct_tasks == total_tasks)
+                    intent.putExtra("status", "finished");
+                else
+                    intent.putExtra("status", "tried");
                 startActivity(intent);
                 finish();
             } else {
                 Intent intent = new Intent(FinishedActivity.this, MainActivity.class);
                 intent.putExtra("finished", index);
+                if(correct_tasks == total_tasks)
+                    intent.putExtra("status", "finished");
+                else
+                    intent.putExtra("status", "tried");
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();

@@ -13,13 +13,13 @@ import java.util.Random;
 public class Lesson {
     public String title;
     public int index;
-    private boolean completed;
+    private String status;
     private ArrayList<Task> tasks = new ArrayList<Task>();
     Context context;
     public Lesson(Context context, String title, int index)
     {
         this.title = title;
-        this.completed = false;
+        this.status = "unfinished";
         this.index = index;
         this.context = context;
     }
@@ -29,7 +29,6 @@ public class Lesson {
         return v -> {
             tasks.clear();
             generateTasks();
-            Globals.currentLesson = this;
             Class<? extends AppCompatActivity> activity;
             switch (tasks.get(0).getType()) {
                 case CHOOSE:
@@ -48,11 +47,6 @@ public class Lesson {
             intent.putExtra("lesson", index);
             context.startActivity(intent);
         };
-    }
-
-    public void clickListener()
-    {
-
     }
 
     private void generateTasks()
@@ -78,10 +72,25 @@ public class Lesson {
     }
     public boolean isCompleted()
     {
-        return completed;
+        return status.equals("finished");
+    }
+
+    public boolean isTried()
+    {
+        return status.equals("tried");
+    }
+
+    public boolean isNone()
+    {
+        return status.equals("unfinished");
     }
     public void complete()
     {
-        completed = true;
+        status = "finished";
+    }
+
+    public void tried()
+    {
+        status = "tried";
     }
 }
