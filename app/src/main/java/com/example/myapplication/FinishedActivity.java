@@ -45,7 +45,6 @@ public class FinishedActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                // Jeśli już pokazano daily strike dzisiaj, wróć od razu do MainActivity
                 Intent intent = new Intent(FinishedActivity.this, MainActivity.class);
                 intent.putExtra("finished", index);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

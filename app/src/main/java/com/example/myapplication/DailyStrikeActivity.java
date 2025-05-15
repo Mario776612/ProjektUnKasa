@@ -3,12 +3,15 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import org.json.JSONArray;
 
 public class DailyStrikeActivity extends AppCompatActivity {
 
@@ -28,10 +31,11 @@ public class DailyStrikeActivity extends AppCompatActivity {
             finish();
         });
 
-        // Możesz tu dynamicznie zaznaczać w XML dni jako completed w zależności od streak count
         DailyStrikeManager manager = new DailyStrikeManager(this);
         int streak = manager.getStreakCount();
 
-        // Przykład: dynamiczne wypełnianie okienek, np. zmiana tła w zależności od dnia (nie pokazane tutaj)
+        TextView ile = findViewById(R.id.ile);
+        ile.setText(String.format("%s %d", ile.getText(), streak));
+
     }
 }

@@ -4,14 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:padding="16dp"
-    android:background="#272838">
+    android:padding="16dp">
 
     <TextView
         android:text="Daily Strike"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
         android:layout_marginBottom="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
