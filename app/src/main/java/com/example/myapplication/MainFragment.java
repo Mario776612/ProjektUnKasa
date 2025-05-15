@@ -45,6 +45,8 @@ public class MainFragment extends Fragment {
         if(lessonFinished >= 0 && status != null) {
             if (!isStatus(lessonFinished, "finished"))
                 statusLesson(lessonFinished, status);
+            requireActivity().getIntent().removeExtra("finished");
+            requireActivity().getIntent().removeExtra("status");
         }
         createLessons();
 
