@@ -3,6 +3,8 @@ package com.example.myapplication;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -59,8 +61,14 @@ public class Expandable {
             TextView checkmark = row.findViewById(R.id.textView2);
 
             int visibility;
-            if(button.isCompleted())
+            if(button.isCompleted()) {
                 visibility = VISIBLE;
+                checkmark.setTextColor(Color.parseColor("#FF007300"));
+            }
+            else if(button.isTried()) {
+                visibility = VISIBLE;
+                checkmark.setTextColor(Color.parseColor("#EDC531"));
+            }
             else
                 visibility = GONE;
 

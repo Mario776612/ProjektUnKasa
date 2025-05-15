@@ -33,15 +33,17 @@ public class JSONManager {
     public static void init(Context context, int lessonCount)
     {
         try {
-            JSONObject root = root(context);
+            JSONObject root = new JSONObject();
             JSONArray lessonsArray = new JSONArray();
 
             for (int i = 1; i <= lessonCount; i++) {
-                lessonsArray.put(false);
+                lessonsArray.put("unfinished");
             }
 
             root.put("lessons", lessonsArray);
             root.put("points", 0);
+            root.put("streak", 0);
+            root.put("lastShown", (long)0);
             root.put("level", 0);
             save(context, root);
         }
@@ -65,6 +67,24 @@ public class JSONManager {
     public static File getFile(Context context, String path)
     {
         return new File(context.getFilesDir(), path);
+    }
+
+    public static long getLong(Context context, String name)
+    {
+        try {
+            return root(context).getLong(name);
+        } catch (JSONException e) {
+            return 0;
+        }
+    }
+
+    public static int getInt(Context context, String name)
+    {
+        try {
+            return root(context).getInt(name);
+        } catch (JSONException e) {
+            return 0;
+        }
     }
 
     public static JSONObject load(Context context) {
