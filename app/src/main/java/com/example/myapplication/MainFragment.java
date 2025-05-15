@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,12 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         context = getContext();
+
+        TextView level = view.findViewById(R.id.textView3);
+        level.setText(java.text.MessageFormat.format("Poziom: {0}", JSONManager.getInt(context, "level")));
+
+        TextView points = view.findViewById(R.id.points);
+        points.setText(MessageFormat.format("Punkty: {0}", JSONManager.getInt(context, "points")));
 
         DatabaseHelper.init(context);
         initJSON();

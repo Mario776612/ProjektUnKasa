@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,37 +18,57 @@ import androidx.fragment.app.Fragment;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TasksFragment extends Fragment {
     private Context context;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
         context = getContext();
 
-        // Only generate if not already present
         if (JSONManager.getQuests(context).length() == 0) {
-            generateRandomQuests(context);
+            JSONManager.generateQuests(context);
         }
+
+        TextView level = view.findViewById(R.id.textView3);
+        level.setText(java.text.MessageFormat.format("Poziom: {0}", JSONManager.getInt(context, "level")));
+
+        TextView points = view.findViewById(R.id.points);
+        points.setText(MessageFormat.format("Punkty: {0}", JSONManager.getInt(context, "points")));
 
         LinearLayout questsContainer = view.findViewById(R.id.quests_container);
         JSONArray quests = JSONManager.getQuests(context);
 
+        List<View> questViews = new ArrayList<>();
+        updateButtons(quests, inflater, questsContainer, points, questViews);
+
+        return view;
+    }
+
+    private void updateButtons(JSONArray quests, LayoutInflater inflater, LinearLayout questsContainer, TextView points, List<View> questViews)
+    {
         for (int i = 0; i < quests.length(); i++) {
             final int questIndex = i;
             try {
                 JSONObject quest = quests.getJSONObject(i);
                 String type = quest.getString("type");
                 int goal = quest.getInt("goal");
-                boolean completed = quest.getBoolean("completed");
 
-                String description =
-                    type.equals("streak") ? "Ucz się przez " + goal + " dni z rzędu" :
-                    type.equals("tasks") ? "Ukończ " + goal + " zadań" :
-                    type.equals("minutes") ? "Ucz się przez " + goal + " minut" :
-                    "Nieznane zadanie";
+                String description = type.equals("streak")
+                        ? "Ucz się przez " + goal + " dni z rzędu"
+                        : type.equals("tasks")
+                        ? "Ukończ " + goal + " zadań"
+                        : type.equals("points")
+                        ? "Zdobądź " + goal + " punktów"
+                        : "Nieznane zadanie";
 
                 View questView = inflater.inflate(R.layout.quest_item, questsContainer, false);
 
@@ -54,56 +76,79 @@ public class TasksFragment extends Fragment {
                 Button redeemButton = questView.findViewById(R.id.redeem_button);
 
                 textView.setText(description);
-                redeemButton.setEnabled(!completed);
+
+                int value = getQuestValue(redeemButton, questIndex, goal);
+                redeemButton.setText(MessageFormat.format("{0}/{1}", value, goal));
 
                 redeemButton.setOnClickListener(v -> {
-                    if(questIndex == 0)
-                    {
-
-                    }
                     JSONManager.completeQuest(context, questIndex);
-                    redeemButton.setEnabled(false);
-                    Toast.makeText(context, "Zadanie ukończone!", Toast.LENGTH_SHORT).show();
+                    updateAllQuestButtons(questViews);
+                    points.setText(MessageFormat.format("Punkty: {0}", JSONManager.getInt(context, "points")));
+                    Toast.makeText(context, "Wyzwanie ukończone!", Toast.LENGTH_SHORT).show();
                 });
 
                 questsContainer.addView(questView);
+                questViews.add(questView);
 
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e("TasksFragment -> onCreate", e.toString());
             }
         }
-
-        return view;
     }
 
-    private static void generateRandomQuests(Context context) {
-        try {
-            JSONObject root = JSONManager.root(context);
-            JSONArray quests = new JSONArray();
+    private void updateAllQuestButtons(List<View> questViews) {
+        JSONArray updatedQuests = JSONManager.getQuests(context);
 
-            int streakGoal = (int)(Math.random() * 7) + 1; //od 1 do 7
-            int tasksGoal = (int)(Math.random() * 10) + 1; //od 1 do 10
-            int minutesGoal = (int)(Math.random() * 11) + 10; //od 10 do 20
+        for (int i = 0; i < questViews.size(); i++) {
+            View questView = questViews.get(i);
+            Button button = questView.findViewById(R.id.redeem_button);
 
-            quests.put(new JSONObject()
-                    .put("type", "streak")
-                    .put("goal", streakGoal)
-                    .put("completed", false));
+            try {
+                JSONObject updatedQuest = updatedQuests.getJSONObject(i);
+                int goal = updatedQuest.getInt("goal");
+                int value = getQuestValue(button, i, goal);
 
-            quests.put(new JSONObject()
-                    .put("type", "tasks")
-                    .put("goal", tasksGoal)
-                    .put("completed", false));
+                button.setText(MessageFormat.format("{0}/{1}", value, goal));
 
-            quests.put(new JSONObject()
-                    .put("type", "minutes")
-                    .put("goal", minutesGoal)
-                    .put("completed", false));
+                if (value >= goal) {
+                    button.setBackgroundColor(Color.parseColor("#00FF00"));
+                    button.setEnabled(true);
+                } else {
+                    button.setBackgroundColor(Color.parseColor("#FF0000"));
+                    button.setEnabled(false);
+                }
 
-            root.put("quests", quests);
-            JSONManager.save(context, root);
-        } catch (JSONException e) {
-            Log.e("TasksFragment -> generateRandomQuests", e.toString());
+            } catch (JSONException e) {
+                Log.e("updateAllQuestButtons", e.toString());
+            }
         }
+    }
+
+    private int getQuestValue(Button redeemButton, int questIdx, int goal)
+    {
+        int value;
+        switch(questIdx)
+        {
+            case 0:
+                value = JSONManager.getInt(context, "streak");
+                break;
+            case 1:
+                value = JSONManager.getInt(context, "tasksDone");
+                break;
+            case 2:
+                value = JSONManager.getInt(context, "points");
+                break;
+            default:
+                value = 0;
+        }
+        if(value >= goal) {
+            redeemButton.setBackgroundColor(Color.parseColor("#00FF00"));
+            redeemButton.setEnabled(true);
+        }
+        else {
+            redeemButton.setBackgroundColor(Color.parseColor("#FF0000"));
+            redeemButton.setEnabled(false);
+        }
+        return value;
     }
 }

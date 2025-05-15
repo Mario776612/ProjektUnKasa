@@ -106,6 +106,7 @@ public class MainActivity4 extends AppCompatActivity {
         popup_placeholder.addView(popup);
 
         correctButton.setBackgroundColor(Color.argb(255, 0, 255, 0));
+        JSONManager.add(this, JSONManager.root(this), "tasksDone", 1);
     }
 
     private void incorrect(Button selectedButton, Button correctButton)

@@ -30,6 +30,65 @@ public class JSONManager {
             Log.e("JSONManager -> save", e.toString());
         }
     }
+
+    private static void generateStreak(JSONArray quests, int repetition)
+    {
+        int streakGoal = (int)(Math.random() * 7) + 1;
+        generateN(quests, 0, streakGoal, repetition);
+    }
+
+    private static void generateTasks(JSONArray quests, int repetition)
+    {
+        int tasksGoal = (int)(Math.random() * 10) + 1;
+
+        generateN(quests, 1, tasksGoal, repetition);
+    }
+
+    private static void generatePoints(JSONArray quests, int goal, int repetition)
+    {
+        generateN(quests, 2, goal, repetition);
+    }
+
+    private static void generateN(JSONArray quests, int index, int goal, int repetition)
+    {
+        try {
+            if(index == 2)
+                quests.put(new JSONObject()
+                        .put("type", "points")
+                        .put("goal", goal)
+                        .put("reward", goal/2)
+                        .put("repetition", repetition));
+            else if(index == 1)
+                quests.put(new JSONObject()
+                        .put("type", "tasks")
+                        .put("goal", goal)
+                        .put("reward", goal*5)
+                        .put("repetition", repetition));
+            else if(index == 0)
+                quests.put(new JSONObject()
+                        .put("type", "streak")
+                        .put("goal", goal)
+                        .put("reward", goal*5)
+                        .put("repetition", repetition));
+        } catch (JSONException e) {
+            Log.e("JSONManager -> generateN", e.toString());
+        }
+    }
+    public static void generateQuests(Context context) {
+        try {
+            JSONObject root = root(context);
+            JSONArray quests = new JSONArray();
+
+            generateStreak(quests, 0);
+            generateTasks(quests, 0);
+            generatePoints(quests, 100, 0);
+
+            root.put("quests", quests);
+            save(context, root);
+        } catch (JSONException e) {
+            Log.e("JSONManager", "generateQuests error", e);
+        }
+    }
     public static void init(Context context, int lessonCount)
     {
         try {
@@ -42,7 +101,8 @@ public class JSONManager {
 
             root.put("lessons", lessonsArray);
             root.put("points", 0);
-            root.put("level", 0);
+            root.put("tasksDone", 0);
+            root.put("level", 1);
             save(context, root);
         }
         catch(JSONException ex)
@@ -109,6 +169,15 @@ public class JSONManager {
         }
     }
 
+    public static JSONArray quests(JSONObject root) {
+        try {
+            return root.getJSONArray("quests");
+        } catch (JSONException e) {
+            Log.e("JSONManager -> quests", e.toString());
+            return new JSONArray();
+        }
+    }
+
     public static long getLong(Context context, String name)
     {
         try {
@@ -124,6 +193,18 @@ public class JSONManager {
             return root(context).getInt(name);
         } catch (JSONException e) {
             return 0;
+        }
+    }
+
+    public static void add(Context context, JSONObject root, String what, int howMuch)
+    {
+        try {
+            int something = root.getInt(what);
+            root.put(what, something+howMuch);
+            Log.i("add", (something+howMuch)+"");
+            save(context, root);
+        } catch (JSONException e) {
+            Log.e("JSONManager -> subtractPoints", e.toString());
         }
     }
 
@@ -147,9 +228,26 @@ public class JSONManager {
     public static void completeQuest(Context context, int index) {
         try {
             JSONObject root = root(context);
-            JSONArray quests = root.getJSONArray("quests");
+            JSONArray quests = quests(root);
             JSONObject quest = quests.getJSONObject(index);
-            quest.put("completed", true);
+
+            add(context, root, "points", quest.getInt("reward"));
+
+            int repetition = quest.getInt("repetition");
+            quest.put("repetition", repetition+1);
+
+            if(index == 2)
+            {
+                int goal = quest.getInt("goal");
+                quest.put("goal", goal*2);
+            }
+            else
+            {
+                int additionalGoal = (int)(Math.random() * 5) + 1;
+                int goal = quest.getInt("goal");
+                quest.put("goal", goal*2+additionalGoal);
+            }
+
             save(context, root);
         } catch (JSONException e) {
             Log.e("JSONManager -> completeQuest", e.toString());
